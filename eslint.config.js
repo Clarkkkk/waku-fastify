@@ -12,6 +12,7 @@ export default [
     regexpPlugin.configs['flat/recommended'],
     {
         files: ['**/*.{ts,tsx,js,mjs,cjs}'],
+        ignores: ['dist/', 'node_modules/'],
         plugins: {
             'simple-import-sort': simpleImportSort,
             ts: tseslint.plugin

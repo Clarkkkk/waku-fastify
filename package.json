@@ -44,6 +44,7 @@
     "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-rsc": "^0.5.9",
     "@whatwg-node/server": "^0.10.17",
+    "cache-parser": "^1.2.6",
     "fastify-plugin": "^5.1.0"
   },
   "devDependencies": {

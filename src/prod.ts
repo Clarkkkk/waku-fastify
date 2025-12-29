@@ -1,8 +1,10 @@
 import fastifyStatic from '@fastify/static'
 import { createServerAdapter } from '@whatwg-node/server'
+import { tokenize } from 'cache-parser'
 import type { FastifyInstance } from 'fastify'
 import path from 'node:path'
 import url from 'node:url'
+import { defaultOptions } from './defaults.js'
 import type { WakuFastifyOptions } from './types.js'
 
 export async function setupProdMode(
@@ -11,15 +13,14 @@ export async function setupProdMode(
 ): Promise<void> {
     const {
         root,
-        distDir = 'dist',
-        basePath = '/',
-        assetCacheControl,
-        defaultCacheControl,
-        childServerOptions
-    } = options
+        basePath,
+        childServerOptions,
+        build: buildOptions
+    } = { ...defaultOptions, ...options }
+    const { distDir, assetCacheControl, defaultCacheControl } = buildOptions
 
     const cwd = root ?? process.cwd()
-    const resolvedDistDir = path.resolve(cwd, distDir)
+    const resolvedDistDir = path.resolve(cwd, distDir!)
 
     const SERVER_BUILD = path.join(resolvedDistDir, 'server', 'index.js')
     const SERVER_BUILD_URL = url.pathToFileURL(SERVER_BUILD).href
@@ -33,6 +34,9 @@ export async function setupProdMode(
     const CLIENT_BUILD = path.join(resolvedDistDir, 'public')
     const ASSET_DIR = path.join(CLIENT_BUILD, 'assets')
 
+    const assetCacheControlStr = tokenize(assetCacheControl).join(', ')
+    const defaultCacheControlStr = tokenize(defaultCacheControl).join(', ')
+
     await fastify.register(fastifyStatic, {
         root: CLIENT_BUILD,
         prefix: basePath,
@@ -45,17 +49,9 @@ export async function setupProdMode(
         setHeaders(res, filepath) {
             const isAsset = filepath.startsWith(ASSET_DIR)
             if (isAsset) {
-                res.setHeader(
-                    'cache-control',
-                    `public, max-age=${assetCacheControl?.maxAge || '31536000'}${
-                        assetCacheControl?.immutable !== false ? ', immutable' : ''
-                    }`
-                )
+                res.setHeader('cache-control', assetCacheControlStr)
             } else {
-                res.setHeader(
-                    'cache-control',
-                    `public, max-age=${defaultCacheControl?.maxAge || '3600'}`
-                )
+                res.setHeader('cache-control', defaultCacheControlStr)
             }
         }
     })

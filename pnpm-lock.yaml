@@ -23,6 +23,9 @@ importers:
       '@whatwg-node/server':
         specifier: ^0.10.17
         version: 0.10.17
+      cache-parser:
+        specifier: ^1.2.6
+        version: 1.2.6
       fastify:
         specifier: ^3.29.0 || ^4.0.0 || ^5.0.0
         version: 5.6.2
@@ -1303,6 +1306,9 @@ packages:
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
+
+  cache-parser@1.2.6:
+    resolution: {integrity: sha512-SjjnKlWgrhDrAWKUxAvmZLRGDa6JExMfjSu59/pvpNoI6mEHYSLcLKUw2RtECEOINvf6dxJo35fY+T/scA0SUA==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -4551,6 +4557,8 @@ snapshots:
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
   buffer-from@1.1.2: {}
+
+  cache-parser@1.2.6: {}
 
   call-bind-apply-helpers@1.0.2:
     dependencies:

@@ -4,21 +4,29 @@ import type { RunnableDevEnvironment } from 'vite'
 import { createServer as createViteServer } from 'vite'
 import { loadWakuConfig } from './utils/load-config.js'
 import { rscPlugin } from './utils/rsc-plugin.js'
+import { defaultOptions } from './defaults.js'
 import type { WakuFastifyOptions } from './types.js'
 
 export async function setupDevMode(
     fastify: FastifyInstance,
     options: WakuFastifyOptions
 ): Promise<void> {
-    const { root, viteOptions, basePath = '/', childServerOptions } = options
+    const {
+        root,
+        basePath = '/',
+        childServerOptions,
+        dev: devOptions
+    } = { ...defaultOptions, ...options }
 
     const cwd = root ?? process.cwd()
+    const { viteOptions = {} } = (devOptions ?? {}) as NonNullable<WakuFastifyOptions['dev']>
 
     const wakuConfig = await loadWakuConfig(cwd)
 
     const vite = await createViteServer({
         root: cwd,
         ...viteOptions,
+        base: viteOptions?.base ?? basePath ?? '/',
         appType: 'custom',
         configFile: false,
         plugins: [rscPlugin(wakuConfig)].flat().filter(Boolean),

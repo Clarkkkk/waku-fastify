@@ -1,61 +1,107 @@
-# vite-vanilla-ts-lib-starter
+# waku-fastify
 
-The starter is built on top of Vite 4.x and prepared for writing libraries in TypeScript. It generates a hybrid package - both support for CommonJS and ESM modules.
+A Fastify plugin that integrates [Waku](https://waku.gg/) (The React Framework) into your Fastify server. It leverages Vite 6's Environment API for a robust development experience and `@whatwg-node/server` for standard Web Request/Response handling.
 
-## Features
-
-- Hybrid support - CommonJS and ESM modules
-- IIFE bundle for direct browser support without bundler
-- Typings bundle
-- ESLint - scripts linter
-- Stylelint - styles linter
-- Prettier - formatter
-- Vitest - test framework
-- Husky + lint-staged - pre-commit git hook set up for formatting
-
-## GitHub Template
-
-This is a template repo. Click the green [Use this template](https://github.com/kbysiec/vite-vanilla-ts-lib-starter/generate) button to get started.
-
-## Clone to local
-
-If you prefer to do it manually with the cleaner git history
+## Installation
 
 ```bash
-git clone https://github.com/kbysiec/vite-vanilla-ts-lib-starter.git
-cd vite-vanilla-ts-lib-starter
-npm i
+npm install waku-fastify
+pnpm i waku-fastify
+yarn add waku-fastify
 ```
-
-## Checklist
-
-When you use this template, update the following:
-
-- Remove `.git` directory and run `git init` to clean up the history
-- Change the name in `package.json` - it will be the name of the IIFE bundle global variable and bundle files name (`.cjs`, `.mjs`, `.iife.js`, `d.ts`)
-- Change the author name in `LICENSE`
-- Clean up the `README` and `CHANGELOG` files
-
-And, enjoy :)
 
 ## Usage
 
-The starter contains the following scripts:
+### Basic Setup
 
-- `dev` - starts dev server
-- `build` - generates the following bundles: CommonJS (`.cjs`) ESM (`.mjs`) and IIFE (`.iife.js`). The name of bundle is automatically taken from `package.json` name property
-- `test` - starts vitest and runs all tests
-- `test:coverage` - starts vitest and run all tests with code coverage report
-- `lint:scripts` - lint `.ts` files with eslint
-- `lint:styles` - lint `.css` and `.scss` files with stylelint
-- `format:scripts` - format `.ts`, `.html` and `.json` files with prettier
-- `format:styles` - format `.cs` and `.scss` files with stylelint
-- `format` - format all with prettier and stylelint
-- `prepare` - script for setting up husky pre-commit hook
-- `uninstall-husky` - script for removing husky from repository
+Here is a basic example of how to set up `waku-fastify` in your server entry point (e.g., `server.ts`):
 
-## Acknowledgment
+```typescript
+import { fastify } from 'fastify'
+import { wakuFastify } from 'waku-fastify'
 
-If you found it useful somehow, I would be grateful if you could leave a star in the project's GitHub repository.
+const app = fastify({ logger: true })
 
-Thank you.
+await app.register(wakuFastify, {
+  // 'development' or 'production'
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  
+  // Waku project root
+  root: process.cwd(),
+  
+  // Configuration for development mode
+  dev: {
+    viteOptions: {
+      server: {
+        hmr: { port: 3001 }
+      }
+    }
+  },
+  
+  // Configuration for production mode
+  build: {
+    distDir: 'dist',
+    assetCacheControl: {
+      maxAge: 31536000,
+      immutable: true
+    }
+  }
+})
+
+const host = process.env.HOST || '127.0.0.1'
+const port = Number(process.env.PORT) || 3000
+
+await app.listen({ port, host })
+console.log(`Server running on http://${host}:${port}`)
+```
+
+### Configuration Options
+
+The plugin accepts the following options:
+
+| Option                      | Type                            | Default                           | Description                                            |
+| --------------------------- | ------------------------------- | --------------------------------- | ------------------------------------------------------ |
+| `mode`                      | `'development' \| 'production'` | `'development'`                   | Application running mode.                              |
+| `basePath`                  | `string`                        | `'/'`                             | Base path for the application.                         |
+| `root`                      | `string`                        | `process.cwd()`                   | Root directory of the Waku project.                    |
+| `dev`                       | `object`                        | `{}`                              | Options specific to development mode.                  |
+| `dev.viteOptions`           | `InlineConfig`                  | `undefined`                       | Custom Vite configuration overrides.                   |
+| `build`                     | `object`                        | `{...}`                           | Options specific to production mode.                   |
+| `build.distDir`             | `string`                        | `'./dist'`                        | Directory containing the built Waku assets.            |
+| `build.assetCacheControl`   | `CacheControl`                  | `{ maxAge: 1y, immutable: true }` | Cache-Control header for static assets (hashed files). |
+| `build.defaultCacheControl` | `CacheControl`                  | `{ maxAge: 1h }`                  | Default Cache-Control header for other static files.   |
+| `childServerOptions`        | `RouteShorthandOptions`         | `undefined`                       | Fastify options for the child server instance.         |
+
+## Project Structure
+
+Your Waku project should follow the standard structure:
+
+```
+waku-project/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── waku.server.tsx       # Server entry point
+├── public/
+├── package.json
+├── tsconfig.json
+└── waku.config.ts            # Waku configuration
+```
+
+## Scripts
+
+Update your `package.json` scripts to support both dev and prod:
+
+```json
+{
+  "scripts": {
+    "dev": "NODE_ENV=development tsx watch server/index.ts",
+    "build": "waku build",
+    "start": "NODE_ENV=production node dist/server.js"
+  }
+}
+```
+
+## License
+
+MIT

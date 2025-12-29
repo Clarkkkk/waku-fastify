@@ -4,8 +4,8 @@
   "description": "Example project for waku-fastify plugin",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch server/dev.ts",
-    "build": "waku build && esbuild server/prod.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/main.js",
+    "dev": "NODE_ENV=development tsx watch server/index.ts",
+    "build": "waku build && esbuild server/index.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/main.js",
     "start": "NODE_ENV=production node dist/main.js",
     "preview": "pnpm build && pnpm start"
   },

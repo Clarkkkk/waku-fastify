@@ -1,27 +1,42 @@
+import type { CacheControl } from 'cache-parser'
 import type { FastifyPluginAsync, RouteShorthandOptions } from 'fastify'
 import type { InlineConfig } from 'vite'
 
-export interface WakuFastifyOptions {
-    mode?: 'development' | 'production'
+export type { CacheControl }
 
+export interface WakuFastifyOptions {
+    /**
+     * Application mode: 'development' or 'production'
+     *
+     * if `mode` is `development`, the plugin will start a Vite dev server
+     *
+     */
+    mode?: 'development' | 'production'
+    /**
+     * Base path for the application
+     *
+     * Defaults to '/'
+     */
+    basePath?: string
+    childServerOptions?: RouteShorthandOptions
+    /** The root of the application */
     root?: string
 
-    viteOptions?: InlineConfig
-
-    distDir?: string
-
-    basePath?: string
-
-    assetCacheControl?: {
-        maxAge?: string
-        immutable?: boolean
+    /** Options for development */
+    dev?: {
+        /** Vite configuration options */
+        viteOptions?: InlineConfig
     }
 
-    defaultCacheControl?: {
-        maxAge?: string
+    /** Options for production */
+    build?: {
+        /** Directory for built assets */
+        distDir?: string
+        /** Cache control for asset files */
+        assetCacheControl?: CacheControl
+        /** Default cache control for other files */
+        defaultCacheControl?: CacheControl
     }
-
-    childServerOptions?: RouteShorthandOptions
 }
 
 export type WakuFastifyPlugin = FastifyPluginAsync<WakuFastifyOptions>
