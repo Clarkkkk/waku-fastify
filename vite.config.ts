@@ -8,10 +8,11 @@ export default defineConfig({
     base: './',
     build: {
         lib: {
-            entry: path.resolve(__dirname, 'src/index.ts'),
+            entry: {
+                index: path.resolve(__dirname, 'src/index.ts')
+            },
             formats: ['cjs', 'es']
         }
     },
-    plugins: [dts(), externalizeDeps()],
-    test: {}
+    plugins: [dts(), externalizeDeps()]
 })

@@ -1,34 +1,50 @@
 {
-  "name": "vite-vanilla-ts-lib-starter",
-  "description": "Typescript library starter",
-  "version": "0.4.0",
+  "name": "waku-fastify",
+  "description": "Fastify plugin for Waku React framework",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "Aaron Zhou",
   "packageManager": "pnpm@10.24.0",
-  "main": "./dist/vite-ts-lib-starter.cjs",
-  "module": "./dist/vite-ts-lib-starter.mjs",
-  "types": "./dist/index.d.ts",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/vite-ts-lib-starter.cjs",
-      "import": "./dist/vite-ts-lib-starter.mjs"
-    }
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE.md"
+  ],
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "test": "vitest",
     "test:update": "vitest --update",
     "test:run": "vitest --run --changed",
     "test:coverage": "vitest --coverage",
-    "typecheck": "tsc --noEmit --watch --preserveWatchOutput",
+    "example:basic": "pnpm --filter waku-fastify-example",
+    "typecheck": "tsc --noEmit",
     "format": "eslint --fix --cache src/**/*.ts",
     "prepare": "husky install",
     "uninstall-husky": "npm uninstall husky --no-save && git config --unset core.hooksPath && npx rimraf .husky",
     "release": "commit-and-tag-version"
+  },
+  "dependencies": {
+    "@fastify/middie": "^9.0.3",
+    "@fastify/static": "^8.3.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "@vitejs/plugin-rsc": "^0.5.9",
+    "@whatwg-node/server": "^0.10.17",
+    "fastify-plugin": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -52,6 +68,15 @@
     "vite": "^7.2.6",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-externalize-deps": "^0.10.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "waku": "^1.0.0-alpha.0"
+  },
+  "peerDependencies": {
+    "fastify": "^5.0.0",
+    "vite": "^6.0.0 || ^7.0.0",
+    "waku": "^1.0.0-alpha.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
