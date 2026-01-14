@@ -1,0 +1,38 @@
+{
+  "name": "dual-framework-example",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "build:server": "tsc --outDir build/server --module esnext --target es2022 --moduleResolution node --esModuleInterop --allowSyntheticDefaultImports --skipLibCheck server.ts",
+    "build": "npm run build:server && waku build && react-router build",
+    "start": "cross-env NODE_ENV=production node build/server/server.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.7",
+    "@mcansh/remix-fastify": "^4.1.2",
+    "@react-router/fs-routes": "^7.12.0",
+    "@react-router/node": "^7.12.0",
+    "fastify": "^5.6.2",
+    "isbot": "^5.0.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router": "^7.12.0",
+    "scheduler": "^0.26.0",
+    "waku": "^1.0.0-alpha.1",
+    "waku-fastify": "workspace:*"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^7.12.0",
+    "@types/node": "^24.10.4",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "cross-env": "^7.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.0.3"
+  }
+}
