@@ -72,6 +72,25 @@ The plugin accepts the following options:
 | `build.defaultCacheControl` | `CacheControl`                  | `{ maxAge: 1h }`                  | Default Cache-Control header for other static files.   |
 | `childServerOptions`        | `RouteShorthandOptions`         | `undefined`                       | Fastify options for the child server instance.         |
 
+### Notes for `basePath` in real Fastify apps
+
+- `basePath` **must end with** `/` (e.g. `'/pages-waku/'`).
+- In development, the plugin mounts Vite in middleware mode. If your app already uses Vite (e.g. another SSR framework),
+  you should set an isolated cache directory via `dev.viteOptions.cacheDir` to avoid `504 Outdated Optimize Dep`.
+
+Example:
+
+```ts
+await app.register(wakuFastify, {
+  basePath: '/pages-waku/',
+  dev: {
+    viteOptions: {
+      cacheDir: 'node_modules/.vite-waku-fastify',
+    },
+  },
+})
+```
+
 ## Project Structure
 
 Your Waku project should follow the standard structure:
